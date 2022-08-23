@@ -1,0 +1,29 @@
+.vendor-zone {
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    position: sticky;
+    top: 0;
+    left: 0;
+
+
+
+    padding: 16px 8px;
+
+
+    border-bottom: 1px solid rgba(216, 216, 216, 0.5);
+  }
+  &__logo {
+    height: 36px;
+    width: 64px;
+
+    border: 1px solid rgba(216, 216, 216, 0.5);
+  }
+  &__brand-name {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
