@@ -1,17 +1,29 @@
 .menu {
   &__box {
+
     display: block;
     position: relative;
-    z-index: 105;
-
-
+    // z-index: 105;
+    
+    height: 44px;
+    padding: 2px 0;
+    &:hover,
+    &:focus,
+    &:active {
+      & .nav__list {
+        opacity: 1;
+        transform: scaleX(1);
+        visibility: visible;
+        pointer-events: all;
+      }
+    }
     & .nav {
       &__list {
         display: block;
         position: absolute;
-        top: 120%;
+        top: 100%;
         right: 0;
-        z-index: 105;
+        // z-index: 105;
 
         min-width: 230px;
 
@@ -37,13 +49,18 @@
         line-height: 1.2;
         letter-spacing: 0.06em;
 
-        // color: #fff;
-
         padding: 8px 16px;
 
+        border: 1px solid transparent;
         transition: all var(--timing-function__main);
         &:hover {
-          background-color: var(--brand_clr__1);
+          color: #fff;
+          background-color: var(--brand_clr__1--accent);
+        }
+        &:active {
+          background-color: transparent;
+          color: var(--brand_clr__1--accent);
+          border-color: var(--brand_clr__1--accent);
         }
       }
     }
