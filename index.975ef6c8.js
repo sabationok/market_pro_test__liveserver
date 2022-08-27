@@ -503,13 +503,6 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"8lqZg":[function(require,module,exports) {
-// ================================ SLIDER__TEST_1
-$(document).ready(function() {
-    // тут вказується клас DIVчика яз якого потрібно зробити слайдер
-    $(".card-img__slick").slick({
-        infinite: true
-    });
-});
 
 },{}]},["1RB6v","8lqZg"], "8lqZg", "parcelRequired7c6")
 

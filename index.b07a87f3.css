@@ -212,7 +212,8 @@ button {
 }
 
 :root {
-  --brand_clr__1: #2196f3;
+  --brand_clr__1: #2175f3e6;
+  --brand_clr__1--accent: #2175f3;
   --brand_clr__2: #fff;
   --brand_clr__2-hover: #e9e9e9;
   --background_clr__main: #fff;
@@ -247,12 +248,24 @@ button {
 }
 
 .logo.box {
+  color: #fff;
+  background-color: var(--brand_clr__1--accent);
+  border: 1px solid #0000;
+}
+
+.logo.box:hover, .logo.box:focus, .logo.box:focus-visible {
   background-color: var(--brand_clr__1);
+}
+
+.logo.box:active {
+  color: var(--brand_clr__1--accent);
+  border-color: var(--brand_clr__1--accent);
+  background-color: #fff;
 }
 
 .logo .logo_link {
   letter-spacing: .05em;
-  color: #fff;
+  white-space: nowrap;
   border: 1px solid #0000;
   padding: 8px 16px;
   font-family: Ralaway, sans-serif;
@@ -276,13 +289,20 @@ button {
 }
 
 .menu__box {
-  z-index: 105;
+  height: 44px;
+  padding: 2px 0;
   display: block;
   position: relative;
 }
 
+.menu__box:hover .nav__list, .menu__box:focus .nav__list, .menu__box:active .nav__list {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+  transform: scaleX(1);
+}
+
 .menu__box .nav__list {
-  z-index: 105;
   min-width: 230px;
   box-shadow: var(--header-shadow);
   transform-origin: 100%;
@@ -294,7 +314,7 @@ button {
   padding: 9px 1px;
   display: block;
   position: absolute;
-  top: 120%;
+  top: 100%;
   right: 0;
   transform: scaleX(0);
 }
@@ -302,6 +322,7 @@ button {
 .menu__box .nav__link {
   letter-spacing: .06em;
   transition: all var(--timing-function__main);
+  border: 1px solid #0000;
   padding: 8px 16px;
   font-size: 14px;
   line-height: 1.2;
@@ -309,7 +330,14 @@ button {
 }
 
 .menu__box .nav__link:hover {
-  background-color: var(--brand_clr__1);
+  color: #fff;
+  background-color: var(--brand_clr__1--accent);
+}
+
+.menu__box .nav__link:active {
+  color: var(--brand_clr__1--accent);
+  border-color: var(--brand_clr__1--accent);
+  background-color: #0000;
 }
 
 .block {
@@ -854,18 +882,11 @@ button {
   background-color: var(--brand_clr__2);
   padding: 8px 16px;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .button.--for_menu:hover, .button.--for_menu:focus, .button.--for_menu:active {
-  background-color: var(--brand_clr__2-hover);
-}
-
-.button.--for_menu:focus + .nav__list, .button.--for_menu:active + .nav__list {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: all;
-  transform: scaleX(1);
+  border-color: var(--brand_clr__1--accent);
 }
 
 .button.--decision {
@@ -900,20 +921,20 @@ button {
 
 .button.--to-cart {
   color: #fff;
-  background-color: #5e9eff;
+  background-color: var(--brand_clr__1--accent);
   padding: 8px 16px;
   font-size: 18px;
   font-weight: 500;
 }
 
 .button.--to-cart:hover, .button.--to-cart:focus, .button.--to-cart:focus-visible {
-  background-color: #448efd;
+  background-color: var(--brand_clr__1);
 }
 
 .button.--to-cart:active {
-  color: #1c77ff;
+  color: var(--brand_clr__1--accent);
+  border-color: var(--brand_clr__1--accent);
   background-color: #fff;
-  border-color: #1c77ff;
 }
 
 .button.--send-feedback {
@@ -930,6 +951,26 @@ button {
 .button.--send-feedback:active {
   color: #fff;
   background-color: #1c77ff;
+}
+
+.button.--pull-img-overlay {
+  text-align: start;
+  width: 100%;
+  height: 36px;
+  cursor: pointer;
+  background-color: #ffffffb3;
+  border-style: none;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.button.--pull-img-overlay:hover, .button.--pull-img-overlay:focus, .button.--pull-img-overlay:active {
+  color: var(--brand_clr__1);
+}
+
+.button.--pull-img-overlay:focus + .--overlay.--top, .button.--pull-img-overlay:focus + .--overlay.--left, .button.--pull-img-overlay:focus + .--overlay.--right, .button.--pull-img-overlay:active + .--overlay.--top, .button.--pull-img-overlay:active + .--overlay.--left, .button.--pull-img-overlay:active + .--overlay.--right {
+  transform: scale(1);
 }
 
 .filter__box {
@@ -949,13 +990,16 @@ button {
 
 .slick__container {
   max-width: 480px;
-  border: 1px solid #d8d8d8b3;
+  border-top: 1px solid #d8d8d880;
+  border-bottom: 1px solid #d8d8d880;
+  margin: 8px auto;
 }
 
-@media screen and (min-width: 481px) {
+@media screen and (min-width: 480px) {
   .slick__container {
-    width: calc(100% - 6px);
-    margin: 8px auto;
+    max-width: 100%;
+    border-left: 1px solid #d8d8d880;
+    border-right: 1px solid #d8d8d880;
   }
 }
 
@@ -984,8 +1028,9 @@ button {
 
 .product-card {
   height: 100%;
+  max-width: 480px;
   background-color: #fff;
-  border: 1px solid #d8d8d840;
+  position: relative;
 }
 
 .product-card__wrapper {
@@ -1042,15 +1087,18 @@ button {
 
 .product-card__bottom {
   min-height: 100px;
+  border-bottom: 1px solid #d8d8d880;
   padding: 8px;
+  position: sticky;
+  top: 100%;
+  left: 0;
 }
 
-.product-card.--1 .--overlay {
+.product-card .--overlay {
   width: 100%;
   height: calc(100% - 36px);
   transition: all var(--timing-function__main);
   background-color: #ffffffb3;
-  padding: 5px 10px;
   position: absolute;
   top: 0;
   left: 0;
@@ -1060,7 +1108,6 @@ button {
 
 .product-card.--1 .--overlay.--top {
   transform-origin: center;
-  overflow-y: auto;
   transform: scaleX(0);
 }
 
@@ -1072,38 +1119,6 @@ button {
 .product-card.--1 .--overlay.--right {
   transform-origin: 100%;
   transform: scaleX(0);
-}
-
-.product-card.--1 .--pull {
-  text-align: start;
-  width: 100%;
-  height: 36px;
-  cursor: pointer;
-  background-color: #ffffffb3;
-  border-style: none;
-  padding: 8px 16px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.product-card.--1 .--pull:hover, .product-card.--1 .--pull:focus, .product-card.--1 .--pull:active {
-  color: var(--brand_clr__1);
-}
-
-.product-card.--1 .--pull:focus + .--overlay.--top, .product-card.--1 .--pull:focus + .--overlay.--left, .product-card.--1 .--pull:focus + .--overlay.--right, .product-card.--1 .--pull:active + .--overlay.--top, .product-card.--1 .--pull:active + .--overlay.--left, .product-card.--1 .--pull:active + .--overlay.--right {
-  transform: scale(1);
-}
-
-.product-card.--2 .--overlay {
-  width: 100%;
-  height: calc(100% - 36px);
-  transition: all var(--timing-function__main);
-  background-color: #ffffffb3;
-  padding: 5px 10px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow-y: auto;
 }
 
 .product-card.--2 .--overlay.--top {
@@ -1118,42 +1133,8 @@ button {
   transform: translateX(100%);
 }
 
-.product-card.--2 .--pull {
-  text-align: start;
-  width: 100%;
-  height: 36px;
-  cursor: pointer;
-  background-color: #ffffffb3;
-  border-style: none;
-  padding: 8px 16px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.product-card.--2 .--pull:hover, .product-card.--2 .--pull:focus, .product-card.--2 .--pull:active {
-  color: var(--brand_clr__1);
-}
-
-.product-card.--2 .--pull:focus + .--overlay.--top, .product-card.--2 .--pull:focus + .--overlay.--left, .product-card.--2 .--pull:focus + .--overlay.--right, .product-card.--2 .--pull:active + .--overlay.--top, .product-card.--2 .--pull:active + .--overlay.--left, .product-card.--2 .--pull:active + .--overlay.--right {
-  transform: translate(0);
-}
-
-.product-card.--3 .--overlay {
-  width: 100%;
-  height: calc(100% - 36px);
-  transition: all var(--timing-function__main);
-  background-color: #ffffffb3;
-  padding: 5px 10px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
 .product-card.--3 .--overlay.--top {
   transform-origin: top;
-  overflow-y: auto;
   transform: scaleY(0);
 }
 
@@ -1167,27 +1148,7 @@ button {
   transform: scale(0);
 }
 
-.product-card.--3 .--pull {
-  text-align: start;
-  width: 100%;
-  height: 36px;
-  cursor: pointer;
-  background-color: #ffffffb3;
-  border-style: none;
-  padding: 8px 16px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.product-card.--3 .--pull:hover, .product-card.--3 .--pull:focus, .product-card.--3 .--pull:active {
-  color: var(--brand_clr__1);
-}
-
-.product-card.--3 .--pull:focus + .--overlay.--top, .product-card.--3 .--pull:focus + .--overlay.--left, .product-card.--3 .--pull:focus + .--overlay.--right, .product-card.--3 .--pull:active + .--overlay.--top, .product-card.--3 .--pull:active + .--overlay.--left, .product-card.--3 .--pull:active + .--overlay.--right {
-  transform: scale(1);
-}
-
-.product-card .card-img__wrapper {
+.product-card .card-imgs__wrapper {
   flex-wrap: wrap;
   gap: 5px;
   display: flex;
