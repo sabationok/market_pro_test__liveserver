@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"1RB6v":[function(require,module,exports) {
+})({"b2E20":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "890e741a975ef6c8";
+module.bundle.HMR_BUNDLE_ID = "90af1432ce086742";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, importScripts */ /*::
 import type {
   HMRAsset,
@@ -502,42 +502,55 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"8lqZg":[function(require,module,exports) {
-// ================================ SLIDER__TEST_1
-// $(document).ready(function () {
-//   // тут вказується клас DIVчика яз якого потрібно зробити слайдер
-//   $('.card-img__slick').slick({
-//     infinite: true,
-//     // prevArrow: '<button type="button" class="slick-prev">&#60;</button>',
-//     // nextArrow: '<button type="button" class="slick-next">&#62;</button>',
-//   });
-// });
-onLookMarkersClick();
-// ? const accordionBtnsEl = document.querySelectorAll('.js-accordion-btn');
-// ? const onAccordionBtnElClick = event => {
-// ?   const { target } = event;
-// ?   target.nextElementSibling.classList.toggle('active');
-// ? };
-// ? accordionBtnsEl.forEach(el => {
-// ?   el.addEventListener('click', onAccordionBtnElClick);
-// ? });
-function onLookMarkersClick() {
-    const lookListEl = document.getElementsByClassName(".look__list");
-    // console.log(lookListEl);
-    const lookMarkerEl = document.querySelectorAll(".look__marker");
-    // console.log(lookMarkerEl);
-    const lookLinkEl = document.querySelectorAll(".look__marker+.look__link-box");
-    // console.log(lookLinkEl);
-    const onLookmarkerClick = (event)=>{
-        const { target  } = event;
-        target.nextElementSibling.classList.toggle("--link-visible");
-        console.log(target.nextElementSibling);
-    };
-    lookMarkerEl.forEach((el)=>{
-        el.addEventListener("click", onLookmarkerClick);
-    });
-}
+},{}],"3HQjF":[function(require,module,exports) {
+const brandsList = [
+    {
+        logoImgLink: "https://picsum.photos/64/36/?random=1",
+        brandName: "Eleanor clo",
+        brandCode: "0217"
+    },
+    {
+        logoImgLink: "https://picsum.photos/64/36/?random=2",
+        brandName: "Trinity shoes",
+        brandCode: "0257"
+    },
+    {
+        logoImgLink: "https://picsum.photos/64/36/?random=3",
+        brandName: "Laconic accesories",
+        brandCode: "0514"
+    }, 
+];
+const brandsSectionEl = document.querySelector(".js-brands-section");
+console.log(brandsSectionEl);
+// const productsOverflow = document.querySelector('.--products .block__overflow');
+// console.log(productsOverflow);
+// const productsTable = document.querySelector('.table.--products .tbody');
+// console.log(productsTable);
+const createBrandsSection = ({ logoImgLink , brandName , brandCode , ...others } = {})=>{
+    return `
+<div class="container__market">
+  <div class="slick__container">
+    <div class="vendor-zone__header">
+      <div class="vendor-zone__logo">
+      <img src="${logoImgLink}" alt="${brandName} logo" width="64px" height="36px">
+      </div>
+      <span class="vendor-zone__brand-name">${brandName} (g${brandCode})</span>
+    </div>
+    <div class="slick__brands-slider js-brand brand-code-${brandCode}">
 
-},{}]},["1RB6v","8lqZg"], "8lqZg", "parcelRequired7c6")
+    </div>
+  </div>
+</div>
+`;
+};
+const brandListArray = brandsList.map((el, idx, arr)=>{
+    return createBrandsSection(el);
+});
+// console.log(brandListArray);
+// console.log(brandListArray.join(''));
+// Вставка елементів на сторінку
+brandsSectionEl.insertAdjacentHTML("afterbegin", brandListArray.join(""));
 
-//# sourceMappingURL=index.975ef6c8.js.map
+},{}]},["b2E20","3HQjF"], "3HQjF", "parcelRequired7c6")
+
+//# sourceMappingURL=зроблено-на-чистому-js.ce086742.js.map

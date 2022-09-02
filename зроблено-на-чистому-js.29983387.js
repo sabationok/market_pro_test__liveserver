@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"1RB6v":[function(require,module,exports) {
+})({"gbwxw":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "890e741a975ef6c8";
+module.bundle.HMR_BUNDLE_ID = "8a18fab929983387";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, importScripts */ /*::
 import type {
   HMRAsset,
@@ -502,42 +502,213 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"8lqZg":[function(require,module,exports) {
-// ================================ SLIDER__TEST_1
-// $(document).ready(function () {
-//   // тут вказується клас DIVчика яз якого потрібно зробити слайдер
-//   $('.card-img__slick').slick({
-//     infinite: true,
-//     // prevArrow: '<button type="button" class="slick-prev">&#60;</button>',
-//     // nextArrow: '<button type="button" class="slick-next">&#62;</button>',
-//   });
-// });
-onLookMarkersClick();
-// ? const accordionBtnsEl = document.querySelectorAll('.js-accordion-btn');
-// ? const onAccordionBtnElClick = event => {
-// ?   const { target } = event;
-// ?   target.nextElementSibling.classList.toggle('active');
-// ? };
-// ? accordionBtnsEl.forEach(el => {
-// ?   el.addEventListener('click', onAccordionBtnElClick);
-// ? });
-function onLookMarkersClick() {
-    const lookListEl = document.getElementsByClassName(".look__list");
-    // console.log(lookListEl);
-    const lookMarkerEl = document.querySelectorAll(".look__marker");
-    // console.log(lookMarkerEl);
-    const lookLinkEl = document.querySelectorAll(".look__marker+.look__link-box");
-    // console.log(lookLinkEl);
-    const onLookmarkerClick = (event)=>{
-        const { target  } = event;
-        target.nextElementSibling.classList.toggle("--link-visible");
-        console.log(target.nextElementSibling);
-    };
-    lookMarkerEl.forEach((el)=>{
-        el.addEventListener("click", onLookmarkerClick);
-    });
-}
+},{}],"h5pLK":[function(require,module,exports) {
+let jsCreatedBrandProductList = document.querySelectorAll(".js-brand");
+// console.log(jsCreatedBrandProductList);
+const brandProductList = [
+    {
+        id: 6451654654,
+        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0440\u043E\u0436\u0435\u0432\u0430",
+        articul: "v03-g217-art655165",
+        price: 1582,
+        currency: "UAH",
+        brandName: "Eleanor",
+        section: "",
+        mainCategory: "",
+        category: "",
+        availbility: "",
+        stock: "",
+        manufacturingTime: "",
+        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+        imageUrl_main_2x: "",
+        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+    },
+    {
+        id: 6451654654,
+        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0437\u0435\u043B\u0435\u043D\u0430",
+        articul: "v03-g217-art652165",
+        price: 1482,
+        currency: "UAH",
+        brandName: "Eleanor",
+        section: "",
+        mainCategory: "",
+        category: "",
+        availbility: "",
+        stock: "",
+        manufacturingTime: "",
+        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+        imageUrl_main_2x: "",
+        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+    },
+    {
+        id: 6451654654,
+        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0433\u043E\u043B\u0443\u0431\u0430",
+        articul: "v03-g217-art656165",
+        price: 1682,
+        currency: "UAH",
+        brandName: "Eleanor",
+        section: "",
+        mainCategory: "",
+        category: "",
+        availbility: "",
+        stock: "",
+        manufacturingTime: "",
+        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+        imageUrl_main_2x: "",
+        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+    },
+    {
+        id: 6451654654,
+        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0441\u0438\u043D\u044F",
+        articul: "v03-g217-art656165",
+        price: 1682,
+        currency: "UAH",
+        brandName: "Eleanor",
+        section: "",
+        mainCategory: "",
+        category: "",
+        availbility: "",
+        stock: "",
+        manufacturingTime: "",
+        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+        imageUrl_main_2x: "",
+        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+    },
+    {
+        id: 6451654654,
+        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u043F\u0430\u0441\u0442\u0435\u043B\u044C",
+        articul: "v03-g217-art656165",
+        price: 1682,
+        currency: "UAH",
+        brandName: "Eleanor",
+        section: "",
+        mainCategory: "",
+        category: "",
+        availbility: "",
+        stock: "",
+        manufacturingTime: "",
+        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+        imageUrl_main_2x: "",
+        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+    }, 
+];
+const createProductCard = (el)=>{
+    let { name ="Yfpdf njdfhe" , articul ="v00-g000-art000000" , price ="000.00" , currency ="UAH" , lvlOfVidkat ="000" , imageUrl_main , imageUrl_1 , imageUrl_2 , imageUrl_3 , imageUrl_4 , imageUrl_5 , imageUrl_6 , ...others } = el;
+    return `
+<div class="product-card --1">
+  <div class="product-card__top">
+    <div>
+      <p class="product-card__name">${name}</p>
+      <p class="product-card__sku">${articul}</p>
+    </div>
+  </div>
 
-},{}]},["1RB6v","8lqZg"], "8lqZg", "parcelRequired7c6")
+  <div class="card --main">
 
-//# sourceMappingURL=index.975ef6c8.js.map
+    <!-- main image -->
+    <div class="card-img__container" width="480" min-height="640">
+      
+      <img
+        class="card__img"
+        src="${imageUrl_main}"
+        width="480"
+        alt=""
+      />
+    </div>
+
+    <!-- img overlay -->
+    <div class="card --main--overlay">
+      <button class="button --pull-img-overlay" type="button">Деталі</button>
+      <div class="product-card__img --overlay --left">
+      </div>
+      <!--  -->
+      <button class="button --pull-img-overlay" type="button">Фото</button>
+      <div class="product-card__img --overlay --top">
+        <div class="card-imgs__wrapper">
+          <img
+            class="card__img-small"
+            src="${imageUrl_1}"
+            alt=""
+          />
+          <img
+            class="card__img-small"
+            src="${imageUrl_2}"
+            alt=""
+          />
+          <img
+            class="card__img-small"
+            src="${imageUrl_3}"
+            alt=""
+          />
+          <img
+            class="card__img-small"
+            src="${imageUrl_4}"
+            alt=""
+          />
+          <img
+            class="card__img-small"
+            src="${imageUrl_5}"
+            alt=""
+          />
+          <img
+            class="card__img-small"
+            src="${imageUrl_6}"
+            alt=""
+          />
+        </div>
+      </div>
+      <!--  -->
+      <button class="button --pull-img-overlay" type="button">Розміри</button>
+      <div class="product-card__img --overlay --right">Розміри</div>
+    </div>
+  </div>
+
+  <div class="product-card__bottom">
+    <div class="product-card__wrapper">
+      <div>
+        <p class="product-card__price">${price}${currency}</p>
+        <p class="product-card__cashback">v${lvlOfVidkat} * * *</p>
+      </div>
+
+      <button class="button --to-cart" type="button">Купити</button>
+    </div>
+  </div>
+</div>
+`;
+};
+const brandProductListArray = brandProductList.map((el, idx, arr)=>{
+    return createProductCard(el);
+});
+// console.log(brandProductListArray);
+// console.log(brandProductListArray.join(''));
+// // Вставка елементів на сторінку
+jsCreatedBrandProductList.forEach((el)=>el.insertAdjacentHTML("afterbegin", brandProductListArray.join("")));
+
+},{}]},["gbwxw","h5pLK"], "h5pLK", "parcelRequired7c6")
+
+//# sourceMappingURL=зроблено-на-чистому-js.29983387.js.map

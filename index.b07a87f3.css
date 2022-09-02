@@ -1098,6 +1098,10 @@ button {
   overflow-y: auto;
 }
 
+.product-card .--overlay p {
+  font-size: 16px;
+}
+
 .product-card.--1 .--overlay {
   pointer-events: none;
 }
@@ -1109,6 +1113,8 @@ button {
 
 .product-card.--1 .--overlay.--left {
   transform-origin: 0;
+  padding: 14px;
+  font-size: 14px;
   transform: scaleX(0);
 }
 
@@ -1136,6 +1142,8 @@ button {
 }
 
 .product-card.--2 .--overlay.--left {
+  padding: 8px;
+  font-size: 14px;
   transform: translateX(-100%);
 }
 
@@ -1164,6 +1172,8 @@ button {
 
 .product-card.--3 .--overlay.--left {
   transform-origin: 0 100%;
+  padding: 8px;
+  font-size: 14px;
   transform: scale(0);
 }
 
@@ -1232,51 +1242,170 @@ button {
   font-weight: 600;
 }
 
-.product-card .card .look__item:hover .look__link {
-  z-index: 4;
-  opacity: 1;
-  pointer-events: all;
-  transform: scale(1);
+.product-card .card .look__item.--art121 {
+  top: 44%;
+  left: 23%;
+}
+
+.product-card .card .look__item.--art122 {
+  top: 37%;
+  left: 39%;
 }
 
 .product-card .card .look__item.--art123 {
+  top: 60%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art124 {
+  top: 91%;
+  left: 40%;
+}
+
+.product-card .card .look__item.--art223 {
   top: 33%;
   left: 57%;
 }
 
-.product-card .card .look__item.--art124 {
-  top: 86%;
-  left: 47%;
-}
-
-.product-card .card .look__item.--art125 {
-  top: 60%;
-  left: 35%;
-}
-
-.product-card .card .look__item.--art126 {
-  top: 45%;
+.product-card .card .look__item.--art224 {
+  top: 82%;
   left: 45%;
+}
+
+.product-card .card .look__item.--art225 {
+  top: 57%;
+  left: 32%;
+}
+
+.product-card .card .look__item.--art226 {
+  top: 45%;
+  left: 42%;
+}
+
+.product-card .card .look__item.--art321 {
+  top: 20%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art323 {
+  top: 30%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art324 {
+  top: 40%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art325 {
+  top: 60%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art326 {
+  top: 70%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art421 {
+  top: 20%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art423 {
+  top: 30%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art424 {
+  top: 40%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art425 {
+  top: 60%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art426 {
+  top: 70%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art521 {
+  top: 20%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art523 {
+  top: 30%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art524 {
+  top: 40%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art525 {
+  top: 60%;
+  left: 50%;
+}
+
+.product-card .card .look__item.--art526 {
+  top: 70%;
+  left: 50%;
 }
 
 .product-card .card .look__link {
   color: inherit;
-  opacity: 0;
-  transform-origin: 0 0;
-  pointer-events: none;
-  transition: all var(--timing-function__main);
+  transition: opacity var(--timing-function__main), background-color var(--timing-function__main), transform var(--timing-function__main);
   background-color: #ffffffb3;
   padding: 8px;
   font-size: 12px;
   display: block;
+  position: relative;
+}
+
+.product-card .card .look__link-box {
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--timing-function__main);
+  padding-left: 7px;
+  display: block;
   position: absolute;
-  top: 70%;
-  left: 70%;
-  transform: scale(0);
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+}
+
+.product-card .card .look__link-box.--link-visible {
+  z-index: 4;
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
+}
+
+.product-card .card .look__link:before {
+  content: " ";
+  height: 0;
+  width: 0;
+  pointer-events: none;
+  transition: all var(--timing-function__main);
+  border: 7px solid #0000;
+  border-right-color: #ffffffb3;
+  margin-top: -7px;
+  position: absolute;
+  top: 50%;
+  right: 100%;
 }
 
 .product-card .card .look__link:hover {
   background-color: #ffffffe6;
+}
+
+.product-card .card .look__link:hover:before {
+  border-right-color: #ffffffe6;
 }
 
 .product-card .card .look__marker {
