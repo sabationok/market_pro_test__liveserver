@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"b2E20":[function(require,module,exports) {
+})({"b5Yj3":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "90af1432ce086742";
+module.bundle.HMR_BUNDLE_ID = "33c1b7c0797b00a1";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, importScripts */ /*::
 import type {
   HMRAsset,
@@ -502,55 +502,55 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"3HQjF":[function(require,module,exports) {
-const brandsList = [
+},{}],"bc5lH":[function(require,module,exports) {
+const styleMensList = [
     {
         logoImgLink: "https://picsum.photos/64/36/?random=1",
-        brandName: "Eleanor clo",
-        brandCode: "0217"
+        styleMenName: "\u0413\u0430\u043B\u044F \u0427\u0435\u0440\u0435\u043F\u0438\u0446\u044F \u0421\u0442\u0430\u0439\u043B",
+        styleMenCode: "324"
     },
     {
         logoImgLink: "https://picsum.photos/64/36/?random=2",
-        brandName: "Trinity shoes",
-        brandCode: "0257"
+        styleMenName: "\u0415\u043B\u0435\u043E\u043D\u043E\u0440\u0430 \u0428\u0443\u0445\u043B\u044F",
+        styleMenCode: "415"
     },
     {
         logoImgLink: "https://picsum.photos/64/36/?random=3",
-        brandName: "Laconic accesories",
-        brandCode: "0514"
+        styleMenName: "\u0406\u0432\u0430\u043D \u0421\u043E\u043B\u044F\u0440\u043A\u0430",
+        styleMenCode: "014"
     }, 
 ];
-const brandsSectionEl = document.querySelector(".js-brands-section");
-console.log(brandsSectionEl);
+const looksSectionEl = document.querySelector(".js-looks-section");
+// console.log(looksSectionEl);
 // const productsOverflow = document.querySelector('.--products .block__overflow');
 // console.log(productsOverflow);
 // const productsTable = document.querySelector('.table.--products .tbody');
 // console.log(productsTable);
-const createBrandsSection = ({ logoImgLink , brandName , brandCode , ...others } = {})=>{
+const createBrandsSection = ({ logoImgLink , styleMenName , styleMenCode , ...others } = {})=>{
     return `
 <div class="container__market">
   <div class="slick__container">
     <div class="vendor-zone__header">
       <div class="vendor-zone__logo">
-      <img src="${logoImgLink}" alt="${brandName} logo" width="64px" height="36px">
+      <img src="${logoImgLink}" alt="${styleMenName} logo" width="64px" height="36px">
       </div>
-      <span class="vendor-zone__brand-name">${brandName} (g${brandCode})</span>
+      <span class="vendor-zone__brand-name">${styleMenName} (stl${styleMenCode})</span>
     </div>
-    <div class="slick__brands-slider js-brand brand-code-${brandCode}">
+    <div class="slick__brands-slider js-styleMen brand-code-${styleMenCode}">
 
     </div>
   </div>
 </div>
 `;
 };
-const brandListArray = brandsList.map((el, idx, arr)=>{
+const styleMensListArray = styleMensList.map((el, idx, arr)=>{
     return createBrandsSection(el);
 });
-// console.log(brandListArray);
-// console.log(brandListArray.join(''));
+// console.log(styleMensListArray);
+// console.log(styleMensListArray.join(''));
 // Вставка елементів на сторінку
-brandsSectionEl.insertAdjacentHTML("afterbegin", brandListArray.join(""));
+looksSectionEl.insertAdjacentHTML("afterbegin", styleMensListArray.join(""));
 
-},{}]},["b2E20","3HQjF"], "3HQjF", "parcelRequired7c6")
+},{}]},["b5Yj3","bc5lH"], "bc5lH", "parcelRequired7c6")
 
-//# sourceMappingURL=зроблено-на-чистому-js.ce086742.js.map
+//# sourceMappingURL=js-луки.797b00a1.js.map

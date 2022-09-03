@@ -701,14 +701,13 @@ const createProductCard = (el)=>{
 </div>
 `;
 };
-const brandProductListArray = brandProductList.map((el, idx, arr)=>{
+const ProductListArr = brandProductList.map((el, idx, arr)=>{
     return createProductCard(el);
-});
-// console.log(brandProductListArray);
-// console.log(brandProductListArray.join(''));
-// // Вставка елементів на сторінку
-jsCreatedBrandProductList.forEach((el)=>el.insertAdjacentHTML("afterbegin", brandProductListArray.join("")));
+}).join("");
+// console.log(ProductListArr);
+// Вставка елементів на сторінку
+jsCreatedBrandProductList.forEach((el)=>el.insertAdjacentHTML("afterbegin", ProductListArr));
 
 },{}]},["gbwxw","h5pLK"], "h5pLK", "parcelRequired7c6")
 
-//# sourceMappingURL=зроблено-на-чистому-js.29983387.js.map
+//# sourceMappingURL=js-бренди.29983387.js.map

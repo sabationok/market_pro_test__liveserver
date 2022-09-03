@@ -1124,7 +1124,7 @@ button {
 }
 
 .product-card.--1 .--overlay.--center {
-  opacity: 0;
+  opacity: 1;
   pointer-events: all;
   background-color: #0000;
 }
@@ -1232,127 +1232,138 @@ button {
   overflow: hidden;
 }
 
-.product-card .card .look__item {
+.product-card .card .look__marker {
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
   border-radius: 50%;
   display: block;
   position: absolute;
+  box-shadow: 0 0 5px #00000080;
 }
 
-.product-card .card .look__item-price {
+.product-card .card .look__marker-price {
   font-weight: 600;
 }
 
-.product-card .card .look__item.--art121 {
+.product-card .card .look__marker.--selected .look__link-box {
+  z-index: 2;
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
+}
+
+.product-card .card .look__marker.--art121 {
   top: 44%;
   left: 23%;
 }
 
-.product-card .card .look__item.--art122 {
+.product-card .card .look__marker.--art122 {
   top: 37%;
   left: 39%;
 }
 
-.product-card .card .look__item.--art123 {
+.product-card .card .look__marker.--art123 {
   top: 60%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art124 {
+.product-card .card .look__marker.--art124 {
   top: 91%;
   left: 40%;
 }
 
-.product-card .card .look__item.--art223 {
+.product-card .card .look__marker.--art223 {
   top: 33%;
   left: 57%;
 }
 
-.product-card .card .look__item.--art224 {
+.product-card .card .look__marker.--art224 {
   top: 82%;
   left: 45%;
 }
 
-.product-card .card .look__item.--art225 {
+.product-card .card .look__marker.--art225 {
   top: 57%;
   left: 32%;
 }
 
-.product-card .card .look__item.--art226 {
+.product-card .card .look__marker.--art226 {
   top: 45%;
   left: 42%;
 }
 
-.product-card .card .look__item.--art321 {
+.product-card .card .look__marker.--art321 {
   top: 20%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art323 {
+.product-card .card .look__marker.--art323 {
   top: 30%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art324 {
+.product-card .card .look__marker.--art324 {
   top: 40%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art325 {
+.product-card .card .look__marker.--art325 {
   top: 60%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art326 {
+.product-card .card .look__marker.--art326 {
   top: 70%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art421 {
+.product-card .card .look__marker.--art421 {
   top: 20%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art423 {
+.product-card .card .look__marker.--art423 {
   top: 30%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art424 {
+.product-card .card .look__marker.--art424 {
   top: 40%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art425 {
+.product-card .card .look__marker.--art425 {
   top: 60%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art426 {
+.product-card .card .look__marker.--art426 {
   top: 70%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art521 {
+.product-card .card .look__marker.--art521 {
   top: 20%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art523 {
+.product-card .card .look__marker.--art523 {
   top: 30%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art524 {
+.product-card .card .look__marker.--art524 {
   top: 40%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art525 {
+.product-card .card .look__marker.--art525 {
   top: 60%;
   left: 50%;
 }
 
-.product-card .card .look__item.--art526 {
+.product-card .card .look__marker.--art526 {
   top: 70%;
   left: 50%;
 }
@@ -1406,15 +1417,6 @@ button {
 
 .product-card .card .look__link:hover:before {
   border-right-color: #ffffffe6;
-}
-
-.product-card .card .look__marker {
-  height: 20px;
-  width: 20px;
-  background-color: #fff;
-  border-radius: 50%;
-  display: block;
-  box-shadow: 0 0 5px #00000080;
 }
 
 /*# sourceMappingURL=index.b07a87f3.css.map */
