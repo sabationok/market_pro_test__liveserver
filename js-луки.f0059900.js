@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"ksrYR":[function(require,module,exports) {
+})({"eQ8wk":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "90af1432ce086742";
+module.bundle.HMR_BUNDLE_ID = "87f606f3f0059900";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
@@ -531,55 +531,133 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"3HQjF":[function(require,module,exports) {
-const brandsList = [
+},{}],"3I87m":[function(require,module,exports) {
+// ! Тут масив іх маркерами до кожного товару
+const looksMarkerList = [
     {
-        logoImgLink: "https://picsum.photos/64/36/?random=1",
-        brandName: "Eleanor clo",
-        brandCode: "0217"
+        lookId: "134651684",
+        markersList: [
+            {
+                makerId: 1,
+                markerName: "name",
+                markerLink: "./",
+                markerPrice: "1582",
+                markerCurrency: "UAH",
+                markerPosTop: "50%",
+                markerPosLeft: "30%"
+            },
+            {
+                makerId: 2,
+                markerName: "name",
+                markerLink: "./",
+                markerPrice: "4682",
+                markerCurrency: "UAH",
+                markerPosTop: "40%",
+                markerPosLeft: "30%"
+            }, 
+        ]
     },
     {
-        logoImgLink: "https://picsum.photos/64/36/?random=2",
-        brandName: "Trinity shoes",
-        brandCode: "0257"
-    },
-    {
-        logoImgLink: "https://picsum.photos/64/36/?random=3",
-        brandName: "Laconic accesories",
-        brandCode: "0514"
+        lookId: "1356151684",
+        markersList: [
+            {
+                makerId: 1,
+                markerName: "name",
+                markerLink: "./",
+                markerPrice: "3282",
+                markerCurrency: "UAH",
+                markerPosTop: "40%",
+                markerPosLeft: "30%"
+            },
+            {
+                makerId: 2,
+                markerName: "name",
+                markerLink: "./",
+                markerPrice: "2382",
+                markerCurrency: "UAH",
+                markerPosTop: "30%",
+                markerPosLeft: "40%"
+            }, 
+        ]
     }, 
 ];
-const brandsSectionEl = document.querySelector(".js-brands-section");
-// console.log(brandsSectionEl);
-// const productsOverflow = document.querySelector('.--products .block__overflow');
-// console.log(productsOverflow);
-// const productsTable = document.querySelector('.table.--products .tbody');
-// console.log(productsTable);
-const createBrandsSection = ({ logoImgLink , brandName , brandCode , ...others } = {})=>{
+// ? Знаходжу список Стилістів (styleMen)
+let styleMensList = document.querySelectorAll(".js-styleMen");
+// console.log(styleMensList);
+// * Знаходжу (Знаходжу список усіх товарів у середині секції стиліста)
+// function find
+// ? Знаходжу тестовий лук
+let testLook = document.querySelector(".js-look-list");
+// console.log(testLook);
+// ? Створюю шаблон одного маркера, а потім методом перебору масиву із маркерами створюю список маркерів одного товару.
+let testMarkersArray = [
+    {
+        makerId: 1,
+        markerName: "Спідниця",
+        markerLink: "./",
+        markerPrice: "2382",
+        markerCurrency: "UAH",
+        markerPosTop: "30%",
+        markerPosLeft: "40%"
+    },
+    {
+        makerId: 2,
+        markerName: "Штани",
+        markerLink: "./",
+        markerPrice: "2382",
+        markerCurrency: "UAH",
+        markerPosTop: "40%",
+        markerPosLeft: "30%"
+    }, 
+];
+// ?Тестова вставка маркерів на перший же лук все пройшло успішно
+// testLook.insertAdjacentHTML('afterbegin', makeJoinedMarkersList(testMarkersArray));
+// ? функція для створення списку маркерівю Готова для вставки методом .insertAdjacentHTML()
+function makeJoinedMarkersList(markersArrayForJoining) {
+    return markersArrayForJoining.map((el)=>{
+        return createLookMarker(el);
+    }).join("");
+}
+// ? Функція для створення  одного маркера із обєкта який містить інфу про нього
+/*
+ * Перевіряв чи працює створення маркерів за допомогою .map()
+ * let fffff = testMarkersArray.map((marker) => {
+ *   // console.log(createLookMarker(marker))
+ *   return createLookMarker(marker)
+ * }).join('');
+ *   console.log(fffff);
+ *
+ * console.log(createLookMarker({
+ *   makerId: 2,
+ *   markerName: 'Спідниця в клітинку',
+ *   markerLink: './',
+ *   markerPrice: '2382',
+ *   markerCurrency: 'UAH',
+ *   markerPosTop: '40%',
+ *   markerPosLeft: '30%',
+ * }));
+ */ function createLookMarker(marker) {
+    let { makerId ="1" , markerLink ="./" , markerName ="name" , markerPrice ="0" , markerCurrency ="UAH" , markerPosTop ="25%" , markerPosLeft ="50%" , ...others } = marker;
     return `
-<div class="container__market">
-  <div class="slick__container">
-    <div class="vendor-zone__header">
-      <div class="vendor-zone__logo">
-      <img src="${logoImgLink}" alt="${brandName} logo" width="64px" height="36px">
-      </div>
-      <span class="vendor-zone__brand-name">${brandName} (g${brandCode})</span>
-    </div>
-    <div class="slick__brands-slider js-brand brand-code-${brandCode}">
-
-    </div>
+<li class="look__marker" style="top:${markerPosTop}; left:${markerPosLeft}">
+  <div class="look__link-box">
+    <a class="look__link" href="${markerLink}"
+      >${markerName}
+      <span class="look__item-price">${markerPrice}${markerCurrency}</span>
+    </a>
   </div>
-</div>
+</li>
 `;
-};
-const brandListArray = brandsList.map((el, idx, arr)=>{
-    return createBrandsSection(el);
-});
-// console.log(brandListArray);
-// console.log(brandListArray.join(''));
-// Вставка елементів на сторінку
-brandsSectionEl.insertAdjacentHTML("afterbegin", brandListArray.join(""));
+} // const markersList = (markersArray.map((el, idx, arr) => {
+ //   return createLookMarker(el);
+ // })).join('');
+ // console.log(markersList);
+ // Вставка елементів на сторінку
+ // styleMensList.forEach(el => el.insertAdjacentHTML(
+ //   'afterbegin',
+ //   ProductListArr
+ // ));
 
-},{}]},["ksrYR","3HQjF"], "3HQjF", "parcelRequired7c6")
+},{}]},["eQ8wk","3I87m"], "3I87m", "parcelRequired7c6")
 
-//# sourceMappingURL=js-бренди.ce086742.js.map
+//# sourceMappingURL=js-луки.f0059900.js.map

@@ -142,7 +142,7 @@
       this[globalName] = mainExports;
     }
   }
-})({"gbwxw":[function(require,module,exports) {
+})({"8BAWm":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
@@ -150,7 +150,7 @@ var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
 module.bundle.HMR_BUNDLE_ID = "8a18fab929983387";
-/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, importScripts */ /*::
+/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
   HMRMessage,
@@ -180,6 +180,8 @@ interface ParcelModule {
 interface ExtensionContext {
   runtime: {|
     reload(): void,
+    getURL(url: string): string;
+    getManifest(): {manifest_version: number, ...};
   |};
 }
 declare var module: {bundle: ParcelRequire, ...};
@@ -189,6 +191,10 @@ declare var HMR_ENV_HASH: string;
 declare var HMR_SECURE: boolean;
 declare var chrome: ExtensionContext;
 declare var browser: ExtensionContext;
+declare var __parcel__import__: (string) => Promise<void>;
+declare var __parcel__importScripts__: (string) => Promise<void>;
+declare var globalThis: typeof self;
+declare var ServiceWorkerGlobalScope: Object;
 */ var OVERLAY_ID = "__parcel__error__overlay__";
 var OldModule = module.bundle.Module;
 function Module(moduleName) {
@@ -219,7 +225,8 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
     var hostname = getHostname();
     var port = getPort();
     var protocol = HMR_SECURE || location.protocol == "https:" && !/localhost|127.0.0.1|0.0.0.0/.test(hostname) ? "wss" : "ws";
-    var ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/"); // Safari doesn't support sourceURL in error stacks.
+    var ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/"); // Web extension context
+    var extCtx = typeof chrome === "undefined" ? typeof browser === "undefined" ? null : browser : chrome; // Safari doesn't support sourceURL in error stacks.
     // eval may also be disabled via CSP, so do a quick check.
     var supportsSourceURL = false;
     try {
@@ -247,12 +254,7 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
                     var id = assetsToAccept[i][1];
                     if (!acceptedAssets[id]) hmrAcceptRun(assetsToAccept[i][0], id);
                 }
-            } else if ("reload" in location) location.reload();
-            else {
-                // Web extension context
-                var ext = typeof chrome === "undefined" ? typeof browser === "undefined" ? null : browser : chrome;
-                if (ext && ext.runtime && ext.runtime.reload) ext.runtime.reload();
-            }
+            } else fullReload();
         }
         if (data.type === "error") {
             // Log parcel errors to console
@@ -279,7 +281,7 @@ function removeErrorOverlay() {
     var overlay = document.getElementById(OVERLAY_ID);
     if (overlay) {
         overlay.remove();
-        console.log("[parcel] \u2728 Error resolved");
+        console.log("[parcel] ✨ Error resolved");
     }
 }
 function createErrorOverlay(diagnostics) {
@@ -308,6 +310,10 @@ ${frame.code}`;
     errorHTML += "</div>";
     overlay.innerHTML = errorHTML;
     return overlay;
+}
+function fullReload() {
+    if ("reload" in location) location.reload();
+    else if (extCtx && extCtx.runtime && extCtx.runtime.reload) extCtx.runtime.reload();
 }
 function getParents(bundle, id) /*: Array<[ParcelRequire, string]> */ {
     var modules = bundle.modules;
@@ -349,6 +355,32 @@ function reloadCSS() {
         cssTimeout = null;
     }, 50);
 }
+function hmrDownload(asset) {
+    if (asset.type === "js") {
+        if (typeof document !== "undefined") {
+            let script = document.createElement("script");
+            script.src = asset.url + "?t=" + Date.now();
+            if (asset.outputFormat === "esmodule") script.type = "module";
+            return new Promise((resolve, reject)=>{
+                var _document$head;
+                script.onload = ()=>resolve(script);
+                script.onerror = reject;
+                (_document$head = document.head) === null || _document$head === void 0 || _document$head.appendChild(script);
+            });
+        } else if (typeof importScripts === "function") {
+            // Worker scripts
+            if (asset.outputFormat === "esmodule") return import(asset.url + "?t=" + Date.now());
+            else return new Promise((resolve, reject)=>{
+                try {
+                    importScripts(asset.url + "?t=" + Date.now());
+                    resolve();
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+    }
+}
 async function hmrApplyUpdates(assets) {
     global.parcelHotUpdate = Object.create(null);
     let scriptsToRemove;
@@ -361,24 +393,20 @@ async function hmrApplyUpdates(assets) {
         // This path is also taken if a CSP disallows eval.
         if (!supportsSourceURL) {
             let promises = assets.map((asset)=>{
-                if (asset.type === "js") {
-                    if (typeof document !== "undefined") {
-                        let script = document.createElement("script");
-                        script.src = asset.url;
-                        return new Promise((resolve, reject)=>{
-                            var _document$head;
-                            script.onload = ()=>resolve(script);
-                            script.onerror = reject;
-                            (_document$head = document.head) === null || _document$head === void 0 || _document$head.appendChild(script);
-                        });
-                    } else if (typeof importScripts === "function") return new Promise((resolve, reject)=>{
-                        try {
-                            importScripts(asset.url);
-                        } catch (err) {
-                            reject(err);
+                var _hmrDownload;
+                return (_hmrDownload = hmrDownload(asset)) === null || _hmrDownload === void 0 ? void 0 : _hmrDownload.catch((err)=>{
+                    // Web extension bugfix for Chromium
+                    // https://bugs.chromium.org/p/chromium/issues/detail?id=1255412#c12
+                    if (extCtx && extCtx.runtime && extCtx.runtime.getManifest().manifest_version == 3) {
+                        if (typeof ServiceWorkerGlobalScope != "undefined" && global instanceof ServiceWorkerGlobalScope) {
+                            extCtx.runtime.reload();
+                            return;
                         }
-                    });
-                }
+                        asset.url = extCtx.runtime.getURL("/__parcel_hmr_proxy__?url=" + encodeURIComponent(asset.url + "?t=" + Date.now()));
+                        return hmrDownload(asset);
+                    }
+                    throw err;
+                });
             });
             scriptsToRemove = await Promise.all(promises);
         }
@@ -415,6 +443,7 @@ function hmrApply(bundle, asset) {
             if (supportsSourceURL) // Global eval. We would use `new Function` here but browser
             // support for source maps is better with eval.
             (0, eval)(asset.output);
+             // $FlowFixMe
             let fn = global.parcelHotUpdate[asset.id];
             modules[asset.id] = [
                 fn,
@@ -423,23 +452,23 @@ function hmrApply(bundle, asset) {
         } else if (bundle.parent) hmrApply(bundle.parent, asset);
     }
 }
-function hmrDelete(bundle, id1) {
+function hmrDelete(bundle, id) {
     let modules = bundle.modules;
     if (!modules) return;
-    if (modules[id1]) {
+    if (modules[id]) {
         // Collect dependencies that will become orphaned when this module is deleted.
-        let deps = modules[id1][1];
+        let deps = modules[id][1];
         let orphans = [];
         for(let dep in deps){
             let parents = getParents(module.bundle.root, deps[dep]);
             if (parents.length === 1) orphans.push(deps[dep]);
         } // Delete the module. This must be done before deleting dependencies in case of circular dependencies.
-        delete modules[id1];
-        delete bundle.cache[id1]; // Now delete the orphans.
+        delete modules[id];
+        delete bundle.cache[id]; // Now delete the orphans.
         orphans.forEach((id)=>{
             hmrDelete(module.bundle.root, id);
         });
-    } else if (bundle.parent) hmrDelete(bundle.parent, id1);
+    } else if (bundle.parent) hmrDelete(bundle.parent, id);
 }
 function hmrAcceptCheck(bundle, id, depsByBundle) {
     if (hmrAcceptCheckOne(bundle, id, depsByBundle)) return true;
@@ -508,7 +537,7 @@ let jsCreatedBrandProductList = document.querySelectorAll(".js-brand");
 const brandProductList = [
     {
         id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0440\u043E\u0436\u0435\u0432\u0430",
+        name: "Сукня шовкова, рожева",
         articul: "v03-g217-art655165",
         price: 1582,
         currency: "UAH",
@@ -530,7 +559,7 @@ const brandProductList = [
     },
     {
         id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0437\u0435\u043B\u0435\u043D\u0430",
+        name: "Сукня шовкова, зелена",
         articul: "v03-g217-art652165",
         price: 1482,
         currency: "UAH",
@@ -552,7 +581,7 @@ const brandProductList = [
     },
     {
         id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0433\u043E\u043B\u0443\u0431\u0430",
+        name: "Сукня шовкова, голуба",
         articul: "v03-g217-art656165",
         price: 1682,
         currency: "UAH",
@@ -574,7 +603,7 @@ const brandProductList = [
     },
     {
         id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0441\u0438\u043D\u044F",
+        name: "Сукня шовкова, синя",
         articul: "v03-g217-art656165",
         price: 1682,
         currency: "UAH",
@@ -596,7 +625,7 @@ const brandProductList = [
     },
     {
         id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u043F\u0430\u0441\u0442\u0435\u043B\u044C",
+        name: "Сукня шовкова, пастель",
         articul: "v03-g217-art656165",
         price: 1682,
         currency: "UAH",
@@ -708,6 +737,6 @@ const ProductListArr = brandProductList.map((el, idx, arr)=>{
 // Вставка елементів на сторінку
 jsCreatedBrandProductList.forEach((el)=>el.insertAdjacentHTML("afterbegin", ProductListArr));
 
-},{}]},["gbwxw","h5pLK"], "h5pLK", "parcelRequired7c6")
+},{}]},["8BAWm","h5pLK"], "h5pLK", "parcelRequired7c6")
 
 //# sourceMappingURL=js-бренди.29983387.js.map

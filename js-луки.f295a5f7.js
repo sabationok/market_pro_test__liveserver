@@ -142,7 +142,7 @@
       this[globalName] = mainExports;
     }
   }
-})({"70fO5":[function(require,module,exports) {
+})({"4UaHd":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
@@ -150,7 +150,7 @@ var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
 module.bundle.HMR_BUNDLE_ID = "41d92038f295a5f7";
-/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, importScripts */ /*::
+/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
   HMRMessage,
@@ -180,6 +180,8 @@ interface ParcelModule {
 interface ExtensionContext {
   runtime: {|
     reload(): void,
+    getURL(url: string): string;
+    getManifest(): {manifest_version: number, ...};
   |};
 }
 declare var module: {bundle: ParcelRequire, ...};
@@ -189,6 +191,10 @@ declare var HMR_ENV_HASH: string;
 declare var HMR_SECURE: boolean;
 declare var chrome: ExtensionContext;
 declare var browser: ExtensionContext;
+declare var __parcel__import__: (string) => Promise<void>;
+declare var __parcel__importScripts__: (string) => Promise<void>;
+declare var globalThis: typeof self;
+declare var ServiceWorkerGlobalScope: Object;
 */ var OVERLAY_ID = "__parcel__error__overlay__";
 var OldModule = module.bundle.Module;
 function Module(moduleName) {
@@ -219,7 +225,8 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
     var hostname = getHostname();
     var port = getPort();
     var protocol = HMR_SECURE || location.protocol == "https:" && !/localhost|127.0.0.1|0.0.0.0/.test(hostname) ? "wss" : "ws";
-    var ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/"); // Safari doesn't support sourceURL in error stacks.
+    var ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/"); // Web extension context
+    var extCtx = typeof chrome === "undefined" ? typeof browser === "undefined" ? null : browser : chrome; // Safari doesn't support sourceURL in error stacks.
     // eval may also be disabled via CSP, so do a quick check.
     var supportsSourceURL = false;
     try {
@@ -247,12 +254,7 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
                     var id = assetsToAccept[i][1];
                     if (!acceptedAssets[id]) hmrAcceptRun(assetsToAccept[i][0], id);
                 }
-            } else if ("reload" in location) location.reload();
-            else {
-                // Web extension context
-                var ext = typeof chrome === "undefined" ? typeof browser === "undefined" ? null : browser : chrome;
-                if (ext && ext.runtime && ext.runtime.reload) ext.runtime.reload();
-            }
+            } else fullReload();
         }
         if (data.type === "error") {
             // Log parcel errors to console
@@ -279,7 +281,7 @@ function removeErrorOverlay() {
     var overlay = document.getElementById(OVERLAY_ID);
     if (overlay) {
         overlay.remove();
-        console.log("[parcel] \u2728 Error resolved");
+        console.log("[parcel] ✨ Error resolved");
     }
 }
 function createErrorOverlay(diagnostics) {
@@ -308,6 +310,10 @@ ${frame.code}`;
     errorHTML += "</div>";
     overlay.innerHTML = errorHTML;
     return overlay;
+}
+function fullReload() {
+    if ("reload" in location) location.reload();
+    else if (extCtx && extCtx.runtime && extCtx.runtime.reload) extCtx.runtime.reload();
 }
 function getParents(bundle, id) /*: Array<[ParcelRequire, string]> */ {
     var modules = bundle.modules;
@@ -349,6 +355,32 @@ function reloadCSS() {
         cssTimeout = null;
     }, 50);
 }
+function hmrDownload(asset) {
+    if (asset.type === "js") {
+        if (typeof document !== "undefined") {
+            let script = document.createElement("script");
+            script.src = asset.url + "?t=" + Date.now();
+            if (asset.outputFormat === "esmodule") script.type = "module";
+            return new Promise((resolve, reject)=>{
+                var _document$head;
+                script.onload = ()=>resolve(script);
+                script.onerror = reject;
+                (_document$head = document.head) === null || _document$head === void 0 || _document$head.appendChild(script);
+            });
+        } else if (typeof importScripts === "function") {
+            // Worker scripts
+            if (asset.outputFormat === "esmodule") return import(asset.url + "?t=" + Date.now());
+            else return new Promise((resolve, reject)=>{
+                try {
+                    importScripts(asset.url + "?t=" + Date.now());
+                    resolve();
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+    }
+}
 async function hmrApplyUpdates(assets) {
     global.parcelHotUpdate = Object.create(null);
     let scriptsToRemove;
@@ -361,24 +393,20 @@ async function hmrApplyUpdates(assets) {
         // This path is also taken if a CSP disallows eval.
         if (!supportsSourceURL) {
             let promises = assets.map((asset)=>{
-                if (asset.type === "js") {
-                    if (typeof document !== "undefined") {
-                        let script = document.createElement("script");
-                        script.src = asset.url;
-                        return new Promise((resolve, reject)=>{
-                            var _document$head;
-                            script.onload = ()=>resolve(script);
-                            script.onerror = reject;
-                            (_document$head = document.head) === null || _document$head === void 0 || _document$head.appendChild(script);
-                        });
-                    } else if (typeof importScripts === "function") return new Promise((resolve, reject)=>{
-                        try {
-                            importScripts(asset.url);
-                        } catch (err) {
-                            reject(err);
+                var _hmrDownload;
+                return (_hmrDownload = hmrDownload(asset)) === null || _hmrDownload === void 0 ? void 0 : _hmrDownload.catch((err)=>{
+                    // Web extension bugfix for Chromium
+                    // https://bugs.chromium.org/p/chromium/issues/detail?id=1255412#c12
+                    if (extCtx && extCtx.runtime && extCtx.runtime.getManifest().manifest_version == 3) {
+                        if (typeof ServiceWorkerGlobalScope != "undefined" && global instanceof ServiceWorkerGlobalScope) {
+                            extCtx.runtime.reload();
+                            return;
                         }
-                    });
-                }
+                        asset.url = extCtx.runtime.getURL("/__parcel_hmr_proxy__?url=" + encodeURIComponent(asset.url + "?t=" + Date.now()));
+                        return hmrDownload(asset);
+                    }
+                    throw err;
+                });
             });
             scriptsToRemove = await Promise.all(promises);
         }
@@ -415,6 +443,7 @@ function hmrApply(bundle, asset) {
             if (supportsSourceURL) // Global eval. We would use `new Function` here but browser
             // support for source maps is better with eval.
             (0, eval)(asset.output);
+             // $FlowFixMe
             let fn = global.parcelHotUpdate[asset.id];
             modules[asset.id] = [
                 fn,
@@ -423,23 +452,23 @@ function hmrApply(bundle, asset) {
         } else if (bundle.parent) hmrApply(bundle.parent, asset);
     }
 }
-function hmrDelete(bundle, id1) {
+function hmrDelete(bundle, id) {
     let modules = bundle.modules;
     if (!modules) return;
-    if (modules[id1]) {
+    if (modules[id]) {
         // Collect dependencies that will become orphaned when this module is deleted.
-        let deps = modules[id1][1];
+        let deps = modules[id][1];
         let orphans = [];
         for(let dep in deps){
             let parents = getParents(module.bundle.root, deps[dep]);
             if (parents.length === 1) orphans.push(deps[dep]);
         } // Delete the module. This must be done before deleting dependencies in case of circular dependencies.
-        delete modules[id1];
-        delete bundle.cache[id1]; // Now delete the orphans.
+        delete modules[id];
+        delete bundle.cache[id]; // Now delete the orphans.
         orphans.forEach((id)=>{
             hmrDelete(module.bundle.root, id);
         });
-    } else if (bundle.parent) hmrDelete(bundle.parent, id1);
+    } else if (bundle.parent) hmrDelete(bundle.parent, id);
 }
 function hmrAcceptCheck(bundle, id, depsByBundle) {
     if (hmrAcceptCheckOne(bundle, id, depsByBundle)) return true;
@@ -503,135 +532,354 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"aZCxy":[function(require,module,exports) {
-let styleMensList = document.querySelectorAll(".js-styleMen");
-console.log(styleMensList);
-const brandProductList = [
+// ! Аля база даних із масивом обєктів у яких вся інформація про луки стилістів
+const styleMakersArray = [
     {
-        id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0440\u043E\u0436\u0435\u0432\u0430",
-        articul: "v03-g217-art655165",
-        price: 1582,
-        currency: "UAH",
-        brandName: "Eleanor",
-        section: "",
-        mainCategory: "",
-        category: "",
-        availbility: "",
-        stock: "",
-        manufacturingTime: "",
-        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
-        imageUrl_main_2x: "",
-        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
-        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
-        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
-        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
-        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
-        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+        stylemenName: "Галя Черепиця Стайл",
+        stylemenCode: "324",
+        productList: [
+            {
+                id: 10000019,
+                name: "Сукня, синя",
+                articul: "945919",
+                price: 2582,
+                cashbackLvl: "03",
+                currency: "UAH",
+                publicatorType: "Стиліст",
+                publicatorName: "Галя Черепиця Стайл",
+                publicatorCode: "324",
+                section: "Одяг жіночий",
+                mainCategory: "Сукні",
+                category: "Вечірні сукні",
+                availbility: "у наявності",
+                stock: "15",
+                manufacturingTime: "2",
+                imagesList: {
+                    imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+                    imageUrl_main_2x: "",
+                    imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+                    imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+                    imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+                    imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+                },
+                lookItemsList: [
+                    {
+                        itemId: 1,
+                        itemName: "Сукня вечірня, шовкова, рожева",
+                        itemLink: "./",
+                        itemPrice: "3282",
+                        itemCurrency: "UAH",
+                        itemPosTop: "50%",
+                        itemPosLeft: "40%"
+                    },
+                    {
+                        itemId: 2,
+                        itemName: 'Туфлі жіночі, "Мон-бланк',
+                        itemLink: "./",
+                        itemPrice: "2382",
+                        itemCurrency: "UAH",
+                        itemPosTop: "88%",
+                        itemPosLeft: "42%"
+                    }, 
+                ]
+            },
+            {
+                id: 10000018,
+                name: "Сукня, рожева",
+                articul: "945918",
+                price: 2582,
+                cashbackLvl: "03",
+                currency: "UAH",
+                publicatorType: "Стиліст",
+                publicatorName: "Галя Черепиця Стайл",
+                publicatorCode: "324",
+                section: "Одяг жіночий",
+                mainCategory: "Сукні",
+                category: "Вечірні сукні",
+                availbility: "у наявності",
+                stock: "15",
+                manufacturingTime: "2",
+                imagesList: {
+                    imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_main_2x: "",
+                    imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+                    imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+                    imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+                    imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+                    imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+                },
+                lookItemsList: [
+                    {
+                        itemsId: 1,
+                        itemsName: "Сукня вечірня, шовкова, рожева",
+                        itemsLink: "./",
+                        itemsPrice: "3282",
+                        itemsCurrency: "UAH",
+                        itemsPosTop: "50%",
+                        itemsPosLeft: "40%"
+                    },
+                    {
+                        itemsId: 2,
+                        itemsName: 'Туфлі жіночі, "Мон-бланк',
+                        itemsLink: "./",
+                        itemsPrice: "2382",
+                        itemsCurrency: "UAH",
+                        itemsPosTop: "88%",
+                        itemsPosLeft: "42%"
+                    }, 
+                ]
+            }, 
+        ]
     },
     {
-        id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0437\u0435\u043B\u0435\u043D\u0430",
-        articul: "v03-g217-art652165",
-        price: 1482,
-        currency: "UAH",
-        brandName: "Eleanor",
-        section: "",
-        mainCategory: "",
-        category: "",
-        availbility: "",
-        stock: "",
-        manufacturingTime: "",
-        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
-        imageUrl_main_2x: "",
-        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
-        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
-        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
-        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
-        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
-        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+        stylemenName: "Елеонора шухля",
+        stylemenCode: "415",
+        productList: [
+            {
+                id: 10000015,
+                name: "Сукня, пастель",
+                articul: "945915",
+                price: 2582,
+                cashbackLvl: "03",
+                currency: "UAH",
+                publicatorType: "Стиліст",
+                publicatorName: "Елеонора шухля",
+                publicatorCode: "415",
+                section: "Одяг жіночий",
+                mainCategory: "Сукні",
+                category: "Вечірні сукні",
+                availbility: "у наявності",
+                stock: "15",
+                manufacturingTime: "2",
+                imagesList: {
+                    imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+                    imageUrl_main_2x: "",
+                    imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+                    imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+                    imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+                    imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+                },
+                lookItemsList: [
+                    {
+                        itemsId: 1,
+                        itemsName: "Сукня вечірня, шовкова, рожева",
+                        itemsLink: "./",
+                        itemsPrice: "3282",
+                        itemsCurrency: "UAH",
+                        itemsPosTop: "50%",
+                        itemsPosLeft: "40%"
+                    },
+                    {
+                        itemsId: 2,
+                        itemsName: 'Туфлі жіночі, "Мон-бланк',
+                        itemsLink: "./",
+                        itemsPrice: "2382",
+                        itemsCurrency: "UAH",
+                        itemsPosTop: "88%",
+                        itemsPosLeft: "42%"
+                    }, 
+                ]
+            },
+            {
+                id: 10000014,
+                name: "Сукня, синя",
+                articul: "945914",
+                price: 2582,
+                cashbackLvl: "03",
+                currency: "UAH",
+                publicatorType: "Стиліст",
+                publicatorName: "Елеонора шухля",
+                publicatorCode: "415",
+                section: "Одяг жіночий",
+                mainCategory: "Сукні",
+                category: "Вечірні сукні",
+                availbility: "у наявності",
+                stock: "15",
+                manufacturingTime: "2",
+                imagesList: {
+                    imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+                    imageUrl_main_2x: "",
+                    imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+                    imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+                    imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+                    imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+                },
+                lookItemsList: [
+                    {
+                        itemsId: 1,
+                        itemsName: "Сукня вечірня, шовкова, рожева",
+                        itemsLink: "./",
+                        itemsPrice: "3282",
+                        itemsCurrency: "UAH",
+                        itemsPosTop: "50%",
+                        itemsPosLeft: "40%"
+                    },
+                    {
+                        itemsId: 2,
+                        itemsName: 'Туфлі жіночі, "Мон-бланк',
+                        itemsLink: "./",
+                        itemsPrice: "2382",
+                        itemsCurrency: "UAH",
+                        itemsPosTop: "88%",
+                        itemsPosLeft: "42%"
+                    }, 
+                ]
+            }, 
+        ]
     },
     {
-        id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0433\u043E\u043B\u0443\u0431\u0430",
-        articul: "v03-g217-art656165",
-        price: 1682,
-        currency: "UAH",
-        brandName: "Eleanor",
-        section: "",
-        mainCategory: "",
-        category: "",
-        availbility: "",
-        stock: "",
-        manufacturingTime: "",
-        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
-        imageUrl_main_2x: "",
-        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
-        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
-        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
-        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
-        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
-        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
-    },
-    {
-        id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u0441\u0438\u043D\u044F",
-        articul: "v03-g217-art656165",
-        price: 1682,
-        currency: "UAH",
-        brandName: "Eleanor",
-        section: "",
-        mainCategory: "",
-        category: "",
-        availbility: "",
-        stock: "",
-        manufacturingTime: "",
-        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
-        imageUrl_main_2x: "",
-        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
-        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
-        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
-        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
-        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
-        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
-    },
-    {
-        id: 6451654654,
-        name: "\u0421\u0443\u043A\u043D\u044F \u0448\u043E\u0432\u043A\u043E\u0432\u0430, \u043F\u0430\u0441\u0442\u0435\u043B\u044C",
-        articul: "v03-g217-art656165",
-        price: 1682,
-        currency: "UAH",
-        brandName: "Eleanor",
-        section: "",
-        mainCategory: "",
-        category: "",
-        availbility: "",
-        stock: "",
-        manufacturingTime: "",
-        imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
-        imageUrl_main_2x: "",
-        imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
-        imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
-        imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
-        imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
-        imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
-        imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+        stylemenName: "Іван Солярка",
+        stylemenCode: "014",
+        productList: [
+            {
+                id: 10000010,
+                name: "Сукня зелена",
+                articul: "945916",
+                price: 2582,
+                cashbackLvl: "03",
+                currency: "UAH",
+                publicatorType: "Стиліст",
+                publicatorName: "Іван Солярка",
+                publicatorCode: "415",
+                section: "Одяг жіночий",
+                mainCategory: "Сукні",
+                category: "Вечірні сукні",
+                availbility: "у наявності",
+                stock: "15",
+                manufacturingTime: "2",
+                imagesList: {
+                    imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+                    imageUrl_main_2x: "",
+                    imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+                    imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+                    imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+                    imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+                },
+                lookItemsList: [
+                    {
+                        itemId: 1,
+                        itemName: "Сукня вечірня, шовкова, рожева",
+                        itemLink: "./",
+                        itemPrice: "3282",
+                        itemCurrency: "UAH",
+                        itemPosTop: "50%",
+                        itemPosLeft: "40%"
+                    },
+                    {
+                        itemId: 2,
+                        itemName: 'Туфлі жіночі, "Мон-бланк',
+                        itemLink: "./",
+                        itemPrice: "2382",
+                        itemCurrency: "UAH",
+                        itemPosTop: "88%",
+                        itemPosLeft: "42%"
+                    }, 
+                ]
+            },
+            {
+                id: 10000011,
+                name: "Сукня голуба",
+                articul: "945917",
+                price: 2582,
+                cashbackLvl: "03",
+                currency: "UAH",
+                publicatorType: "Стиліст",
+                publicatorName: "Іван Солярка",
+                publicatorCode: "415",
+                section: "Одяг жіночий",
+                mainCategory: "Сукні",
+                category: "Вечірні сукні",
+                availbility: "у наявності",
+                stock: "15",
+                manufacturingTime: "2",
+                imagesList: {
+                    imageUrl_main: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-goluba__br2.webp",
+                    imageUrl_main_2x: "",
+                    imageUrl_1: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_2: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp",
+                    imageUrl_3: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_rozeva_br2.webp",
+                    imageUrl_4: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-synia__br2.webp",
+                    imageUrl_5: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia-pastel__br2.webp",
+                    imageUrl_6: "https://raw.githubusercontent.com/sabationok/market_pro_test__liveserver/main/images/brand_cards/brand_2/suknia_zelena__br2.webp"
+                },
+                lookItemsList: [
+                    {
+                        itemId: 1,
+                        itemName: "Сукня вечірня, шовкова, рожева",
+                        itemLink: "./",
+                        itemPrice: "3282",
+                        itemCurrency: "UAH",
+                        itemPosTop: "50%",
+                        itemPosLeft: "40%"
+                    },
+                    {
+                        itemId: 2,
+                        itemName: 'Туфлі жіночі, "Мон-бланк',
+                        itemLink: "./",
+                        itemPrice: "2382",
+                        itemCurrency: "UAH",
+                        itemPosTop: "88%",
+                        itemPosLeft: "42%"
+                    }, 
+                ]
+            }, 
+        ]
     }, 
 ];
-const createProductCard = (el)=>{
-    let { name ="Yfpdf njdfhe" , articul ="v00-g000-art000000" , price ="000.00" , currency ="UAH" , lvlOfVidkat ="000" , imageUrl_main , imageUrl_1 , imageUrl_2 , imageUrl_3 , imageUrl_4 , imageUrl_5 , imageUrl_6 , ...others } = el;
+// ! рефакторинг
+// ? Обєкт яккий потрібно вставити у функцію для створення сторінки
+let refactoredLookPageObj = {
+    classForMakeList: ".js-styleMaker",
+    lookMakersData: styleMakersArray
+};
+createLooksPage(refactoredLookPageObj);
+function createLooksPage({ classForMakeList , lookMakersData , ...others }) {
+    let stlyleMakerListEl = document.querySelectorAll(classForMakeList);
+    stlyleMakerListEl.forEach((styleMaker)=>{
+        let publicatorCodeToCompare = styleMaker.dataset.stylemaker;
+        let foundedLookList = founderOfLooksList(lookMakersData, publicatorCodeToCompare);
+        styleMaker.insertAdjacentHTML("afterbegin", foundedLookList.map((el)=>{
+            return createProductCard(el);
+        }));
+    });
+}
+// ? Функція для пошуку списку луків/товарів
+function founderOfLooksList(array, paramToCompare) {
+    for (const el of array){
+        if (el.stylemenCode === paramToCompare) return el.productList;
+    }
+    return;
+}
+// ? Функція для створення картки товару
+function createProductCard(cardInfoObject) {
+    let { id ="---------" , name ="---------" , articul ="---------" , price ="------.--" , currency ="---" , cashbackLvl ="--" , publicatorType ="---" , publicatorName ="---" , publicatorCode ="----" , brandName ="-----" , brandCode ="----" , section ="---" , mainCategory ="---" , category ="---" , availbility ="---" , stock ="-----" , manufacturingTime ="---" , imagesList , socialLinksList ={} , imagesList: { imageUrl_main ="./" , ...othersImg } , lookItemsList , ...otherInfo } = cardInfoObject;
+    // *
+    let lookItemsListComp = createLookItemsListComp(lookItemsList);
+    let ImagesListComp = createSmallImgListComp(imagesList);
+    let lookDetailsTableComp = createDetailsTableComp(cardInfoObject);
+    let cardSocialsComp = createCardSocialsComp(socialLinksList);
     return `
-<div class="product-card --1">
+<div class="product-card --1" data-internalId="${id}">
   <div class="product-card__top">
     <div>
       <p class="product-card__name">${name}</p>
-      <p class="product-card__sku">${articul}</p>
+      <p class="product-card__sku">art${articul}</p>
     </div>
   </div>
 
   <div class="card --main">
 
-    <!-- main image -->
-    <div class="card-img__container" width="480" min-height="640">
+    <!-- //* main image -->
+    <div class="card-img__container" width="480" height="640">
       
       <img
         class="card__img"
@@ -641,73 +889,238 @@ const createProductCard = (el)=>{
       />
     </div>
 
-    <!-- img overlay -->
+    <!-- //? img overlay --> 
+    <!-- //* деталі карти --> 
     <div class="card --main--overlay">
-      <button class="button --pull-img-overlay" type="button">Деталі</button>
+      <button class="button --pull-img-overlay" type="button">Деталі
+      <svg class="svg">
+        <use href="./sprite_market.a76161c9.svg#icon-list"></use>
+      </svg>
+      </button>
       <div class="product-card__img --overlay --left">
+        ${lookDetailsTableComp}
       </div>
-      <!--  -->
-      <button class="button --pull-img-overlay" type="button">Фото</button>
+
+      <!-- //* фотографії  --> 
+      <button class="button --pull-img-overlay" type="button">Фото
+        <svg class="svg">
+          <use href="./sprite_market.a76161c9.svg#icon-images"></use>
+        </svg>
+      </button>
       <div class="product-card__img --overlay --top">
-        <div class="card-imgs__wrapper">
-          <img
-            class="card__img-small"
-            src="${imageUrl_1}"
-            alt=""
-          />
-          <img
-            class="card__img-small"
-            src="${imageUrl_2}"
-            alt=""
-          />
-          <img
-            class="card__img-small"
-            src="${imageUrl_3}"
-            alt=""
-          />
-          <img
-            class="card__img-small"
-            src="${imageUrl_4}"
-            alt=""
-          />
-          <img
-            class="card__img-small"
-            src="${imageUrl_5}"
-            alt=""
-          />
-          <img
-            class="card__img-small"
-            src="${imageUrl_6}"
-            alt=""
-          />
-        </div>
+        <ul class="card__imgslist">
+          ${ImagesListComp}
+        </ul>
       </div>
-      <!--  -->
-      <button class="button --pull-img-overlay" type="button">Розміри</button>
-      <div class="product-card__img --overlay --right">Розміри</div>
+
+      <!-- //* розмірна сітка -->
+      <button class="button --pull-img-overlay" type="button">Розміри
+        <svg class="svg">
+          <use href="./sprite_market.a76161c9.svg#icon-table"></use>
+        </svg>
+      </button>
+      <div class="product-card__img --overlay --right">
+        Розміри
+      </div>
+      
+      <!-- //* look -->
+      <div class="product-card__img --overlay --center">
+        <ul class="look__list  js-look-list">
+        ${lookItemsListComp}
+        </ul>
+      </div>
+
     </div>
   </div>
 
   <div class="product-card__bottom">
+
     <div class="product-card__wrapper">
       <div>
         <p class="product-card__price">${price}${currency}</p>
-        <p class="product-card__cashback">v${lvlOfVidkat} * * *</p>
+        <p class="product-card__cashback">v${cashbackLvl} * * *</p>
       </div>
 
-      <button class="button --to-cart" type="button">Купити</button>
+      <!-- //* кнопки "Купити" і "Кошик" -->
+      <div class="card__buttons-box">
+        <button class="button --to-cart" type="button" data-cardId="${id}">
+          <svg class="btn-svg">
+            <use href="./sprite_market.a76161c9.svg#icon-shopping-cart"></use>
+          </svg>
+        </button>
+        <button class="button --buy-now" type="button" data-cardId="${id}">
+          Купити
+        </button>
+      </div>
     </div>
+
+    <!-- //* Соціальні посилання та дії -->
+    <ul class="card__social-list">
+      ${cardSocialsComp}
+    </ul>
+
   </div>
 </div>
 `;
-};
-const ProductListArr = brandProductList.map((el, idx, arr)=>{
-    return createProductCard(el);
-}).join("");
-// console.log(ProductListArr);
-// Вставка елементів на сторінку
-styleMensList.forEach((el)=>el.insertAdjacentHTML("afterbegin", ProductListArr));
+}
+// ? функція для створення списку маркерів.
+function createLookItemsListComp(lookItemsList) {
+    return lookItemsList.map((el)=>{
+        return createLookItemComp(el);
+    }).join("");
+}
+// ? Функція для створення  одного маркера із обєкта який містить інфу про нього
+function createLookItemComp(marker) {
+    let { itemId ="1" , itemLink ="./" , itemName ="name" , itemPrice ="0" , itemCurrency ="UAH" , itemPosTop ="25%" , itemPosLeft ="50%" , ...others } = marker;
+    return `
+<li class="look__marker" style="top:${itemPosTop}; left:${itemPosLeft}">
+  <div class="look__link-box">
+    <a class="look__link" href="${itemLink}"
+      >${itemName}
+      <span class="look__item-price">${itemPrice}${itemCurrency}</span>
+    </a>
+  </div>
+</li>
+`;
+}
+// ? Функція для створення вкладки "ФОТО". список додадкових зображень (список на 6 зображень)
+// ! підлягає рефакторингу і вдосконаленню для розміщення зображень для різних типів екранів. По аналогії до створення списку маркерів луків
+function createSmallImgListComp(imagesList) {
+    let { imageUrl_1 ="./" , imageUrl_2 ="./" , imageUrl_3 ="./" , imageUrl_4 ="./" , imageUrl_5 ="./" , imageUrl_6 ="./" , ...othersImg } = imagesList;
+    return `
+<li class="card__imgsList-Item">
+  <img
+      class="card__img-small"
+      src="${imageUrl_1}"
+      alt=""
+    />
+</li>
+<li class="card__imgsList-Item">
+  <img
+      class="card__img-small"
+      src="${imageUrl_2}"
+      alt=""
+    />
+</li>
+<li class="card__imgsList-Item">
+  <img
+      class="card__img-small"
+      src="${imageUrl_3}"
+      alt=""
+    />
+</li>
+<li class="card__imgsList-Item">
+  <img
+      class="card__img-small"
+      src="${imageUrl_4}"
+      alt=""
+    />
+</li>
+<li class="card__imgsList-Item">
+  <img
+      class="card__img-small"
+      src="${imageUrl_5}"
+      alt=""
+    />
+</li>
+<li class="card__imgsList-Item">
+  <img
+      class="card__img-small"
+      src="${imageUrl_6}"
+      alt=""
+    />
+</li>
+`;
+}
+// ? Функція для створення вкладки "ДЕТАЛІ"
+function createDetailsTableComp(object) {
+    let { id ="99999999" , name ="---------" , articul ="00000000" , price ="00000.00" , currency ="UAH" , cashbackLvl ="00" , publicatorType ="Стиліст" , publicatorName ="---" , publicatorCode ="0000" , publicatorLink ="./" , style ="---" , desription =`Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum tempora animi sit voluptatem libero molestiae adipisci, explicabo est nostrum et vitae magni nobis voluptatibus iure eum ab repellat, praesentium cupiditate.` , lookItemsList , ...otherInfo } = object;
+    return `
+<table class="table --card-details">
+  <tbody class="tbody">
+    <tr class="row --1">
+      <td class="col --1">Назва</td>
+      <td class="col --2">${name}</td>
+    </tr>
+    <tr class="row --2">
+      <td class="col --1">Артикул</td>
+      <td class="col --2">art${articul}</td>
+    </tr>
+    <tr class="row --3">
+      <td class="col --1">${publicatorType}</td>
+      <td class="col --2"><a href="${publicatorLink}">${publicatorName}</a></td>
+    </tr>
+    <tr class="row --4">
+      <td class="col --1">Код стиліста</td>
+      <td class="col --2">${publicatorCode}</td>
+    </tr>
+    <tr class="row --5">
+      <td class="col --1">Стиль</td>
+      <td class="col --2">${style}</td>
+    </tr>
+    <tr class="row --6">
+      <td class="col --1">Ціна</td>
+      <td class="col --2">${price}</td>
+    </tr>
+    <tr class="row --7">
+      <td class="col --1">Валюта</td>
+      <td class="col --2">${currency}</td>
+    </tr>
+    <tr class="row --8">
+      <td class="col --1">Рівень кешбеку</td>
+      <td class="col --2">${cashbackLvl}</td>
+    </tr>
+    <tr class="row --9">
+      <td class="col --1">Опис</td>
+      <td class="col --2">${desription}</td>
+    </tr>
+  </tbody>
+</table>
+`;
+}
+function createCardSocialsComp(socialsLinkList) {
+    let { instagramLink ="" , pinterestLink ="" , youTubeLink ="" , tikTokLink ="" , ...otherLinks } = socialsLinkList;
+    return `
+    <li class="card__social-item">
+      <a class="card__social-link" href="${instagramLink}">
+        <svg class="svg">
+          <use href="./sprite_market.a76161c9.svg#icon-instagram-1"></use>
+        </svg>
+      </a>
+    </li>
+    <li class="card__social-item">
+      <a class="card__social-link" href="${pinterestLink}">
+        <svg class="svg">
+          <use href="./sprite_market.a76161c9.svg#icon-pinterest2"></use>
+        </svg>
+      </a>
+    </li>
+    <li class="card__social-item">
+      <a class="card__social-link" href="${tikTokLink}">
+        <svg class="svg">
+          <use href="./sprite_market.a76161c9.svg#icon-tiktok"></use>
+        </svg>
+      </a>
+    </li>
+    <li class="card__social-item">
+      <a class="card__social-link" href="${youTubeLink}">
+        <svg class="svg">
+          <use href="./sprite_market.a76161c9.svg#icon-youtube-play"></use>
+        </svg>
+      </a>
+    </li>
+    <li class="card__social-item">
+      <a class="card__social-link" href="">
+        <svg class="svg">
+          <use href="./sprite_market.a76161c9.svg#icon-share"></use>
+        </svg>
+      </a>
+    </li>
+      
+  
+  `;
+}
 
-},{}]},["70fO5","aZCxy"], "aZCxy", "parcelRequired7c6")
+},{}]},["4UaHd","aZCxy"], "aZCxy", "parcelRequired7c6")
 
 //# sourceMappingURL=js-луки.f295a5f7.js.map
