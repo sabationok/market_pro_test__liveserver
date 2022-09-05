@@ -8,12 +8,10 @@
     top: 0;
     left: 0;
 
-
-
-    padding: 16px 8px;
-
+    padding: 0 8px;
 
     border-bottom: 1px solid rgba(216, 216, 216, 0.5);
+
   }
   &__logo {
     height: 36px;
@@ -22,6 +20,8 @@
     border: 1px solid rgba(216, 216, 216, 0.5);
   }
   &__brand-name {
+    display: inline-block;
+    padding: 2px 0;
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
     font-weight: 500;
