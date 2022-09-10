@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"ShInH":[function(require,module,exports) {
+})({"eaOdp":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "890e741a975ef6c8";
+module.bundle.HMR_BUNDLE_ID = "76cb0f2dcfc4cbe4";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
@@ -531,31 +531,10 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"8lqZg":[function(require,module,exports) {
-// todo ================================ ОЧИСТКА МАРКЕРІВ
-// let prevMarker = null;
-// clearLookMarkers();
-function clearLookMarkers() {
-    window.addEventListener("click", onMarkerClick);
-    function onMarkerClick(event) {
-        let { target , currentTarget  } = event;
-        if (!target.classList.contains("look__marker")) {
-            document.querySelectorAll(".look__marker").forEach((elem)=>{
-                elem.classList.remove("--selected");
-            });
-            return;
-        }
-        if (target === prevMarker) {
-            target.classList.toggle("--selected");
-            prevMarker = target;
-            return;
-        }
-        if (prevMarker !== null) prevMarker.classList.remove("--selected");
-        target.classList.toggle("--selected");
-        prevMarker = target;
-    }
-}
+},{}],"ctxJb":[function(require,module,exports) {
+var _autorsList = require("../js-data/autorsList");
+var _postsList = require("../js-data/postsList");
 
-},{}]},["ShInH","8lqZg"], "8lqZg", "parcelRequired7c6")
+},{"../js-data/autorsList":"aMVTQ","../js-data/postsList":"1eGfh"}]},["eaOdp","ctxJb"], "ctxJb", "parcelRequired7c6")
 
-//# sourceMappingURL=index.975ef6c8.js.map
+//# sourceMappingURL=index.cfc4cbe4.js.map

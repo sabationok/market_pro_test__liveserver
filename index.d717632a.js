@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"ShInH":[function(require,module,exports) {
+})({"1KZoN":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "890e741a975ef6c8";
+module.bundle.HMR_BUNDLE_ID = "4626bb33d717632a";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
@@ -531,31 +531,42 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"8lqZg":[function(require,module,exports) {
-// todo ================================ ОЧИСТКА МАРКЕРІВ
-// let prevMarker = null;
-// clearLookMarkers();
-function clearLookMarkers() {
-    window.addEventListener("click", onMarkerClick);
-    function onMarkerClick(event) {
-        let { target , currentTarget  } = event;
-        if (!target.classList.contains("look__marker")) {
-            document.querySelectorAll(".look__marker").forEach((elem)=>{
-                elem.classList.remove("--selected");
-            });
-            return;
-        }
-        if (target === prevMarker) {
-            target.classList.toggle("--selected");
-            prevMarker = target;
-            return;
-        }
-        if (prevMarker !== null) prevMarker.classList.remove("--selected");
-        target.classList.toggle("--selected");
-        prevMarker = target;
-    }
-}
+},{}],"5GXNQ":[function(require,module,exports) {
+// todo ================================ SLIDER__BRANDS
+$(document).ready(function() {
+    // тут вказується клас DIVчика яз якого потрібно зробити слайдер
+    $(".slick__brands-slider").slick({
+        dots: true,
+        infinite: true,
+        arrows: false,
+        // arrows: false,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        /* responsive: [
+      {
+        breakpoint: 1100,
+        settings: {
+          arrows: false,
+          // centerMode: true,
+          // centerPadding: '40px',
+          slidesToScroll: 1,
+          slidesToShow: 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          arrows: false,
+          // centerMode: true,
+          // centerPadding: '40px',
+          slidesToShow: 1,
+        },
+      },
+    ],*/ prevArrow: '<button type="button" class="slick-prev">&#60;</button>',
+        nextArrow: '<button type="button" class="slick-next">&#62;</button>'
+    });
+});
 
-},{}]},["ShInH","8lqZg"], "8lqZg", "parcelRequired7c6")
+},{}]},["1KZoN","5GXNQ"], "5GXNQ", "parcelRequired7c6")
 
-//# sourceMappingURL=index.975ef6c8.js.map
+//# sourceMappingURL=index.d717632a.js.map

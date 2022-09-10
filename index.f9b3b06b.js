@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"ShInH":[function(require,module,exports) {
+})({"1gjnD":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "890e741a975ef6c8";
+module.bundle.HMR_BUNDLE_ID = "54abdd79f9b3b06b";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
@@ -531,31 +531,205 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"8lqZg":[function(require,module,exports) {
-// todo ================================ ОЧИСТКА МАРКЕРІВ
-// let prevMarker = null;
-// clearLookMarkers();
-function clearLookMarkers() {
-    window.addEventListener("click", onMarkerClick);
-    function onMarkerClick(event) {
-        let { target , currentTarget  } = event;
-        if (!target.classList.contains("look__marker")) {
-            document.querySelectorAll(".look__marker").forEach((elem)=>{
-                elem.classList.remove("--selected");
-            });
-            return;
-        }
-        if (target === prevMarker) {
-            target.classList.toggle("--selected");
-            prevMarker = target;
-            return;
-        }
-        if (prevMarker !== null) prevMarker.classList.remove("--selected");
-        target.classList.toggle("--selected");
-        prevMarker = target;
+},{}],"aHHgN":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var _spriteMarketSvg = require("../images/sprite_market.svg");
+var _spriteMarketSvgDefault = parcelHelpers.interopDefault(_spriteMarketSvg);
+var _autorsList = require("../js-data/autorsList");
+var _postsList = require("../js-data/postsList");
+//* Знаходжу усі необхідні елементи для створення і управління модалкою
+const refs = {
+    modalEl: document.querySelector("[data-modal]"),
+    closeModalBtn: document.querySelector("[data-modal-close]"),
+    modalNameEl: document.querySelector(".js-modal-name"),
+    modalContentEl: document.querySelector(".js-modal-content")
+};
+// * Деструктурищзація для зручності звернення до змінних
+let { modalEl , closeModalBtn , modalContentEl , modalNameEl , ...otherRefs } = refs;
+// * Функція зміни класу БЕКДРОП
+function toggleModal() {
+    modalEl.classList.toggle("is-hidden");
+    closeModalBtn.addEventListener("click", toggleModal);
+    if (modalEl.classList.contains("is-hidden")) {
+        modalContentEl.textContent = "";
+        // closeModalBtn.removeEventListener("click", closeModal);
     }
 }
+// //* Закриває і чистить вміст модалки
+// function closeModal() {
+//     modalEl.classList.remove("is-hidden");
+//     modalContentEl.textContent = "";
+//     closeModalBtn.removeEventListener("click", closeModal);
+// }
+// //* Відкриває модалку і додає слухача подій на кнопку закриття
+// function closeModal() {
+//     modalEl.classList.add("is-hidden");
+//     closeModalBtn.addEventListener("click", closeModal);
+// }
+// * Функція створення модалки
+function createModalContent(target, callback) {
+    console.log(target);
+    // * Навішується слухач подій на кнопку закриття модалки
+    closeModalBtn.addEventListener("click", toggleModal);
+    //! тестове наповнення модалки
+    if (callback === undefined) {
+        modalContentEl.insertAdjacentHTML('afterbegin',`
+      <p>*</p>
+      <p>*</p>
+      <p>*</p>
+      <p>*</p>
+      <p>*</p>
+      тут буде вставлений текст колбек функції
+      <p>*</p>
+      <p>*</p>
+      <p>*</p>
+      <p>*</p>
+      <p>*</p>
+      `);
+        console.log("У модалку не передано кнаповнення");
+    } else callback(target, modalContentEl);
+}
+//todo Навішую слухача подій на кнопку на WINDOW для делегування події "CLICK" на кнопки карток
+onShowAutorCardsBtnClick((0, _autorsList.autorsListData));
+function onShowAutorCardsBtnClick(arrayForFinding) {
+    const refs = {
+        autorId: null,
+        autorCardsList: null,
+        targetEl: null
+    };
+    window.addEventListener("click", (buttonEvent)=>{
+        let { target  } = buttonEvent;
+        if (!target.classList.contains("--open-autorCardList")) return;
+        else if (target !== undefined) {
+            refs.autorId = target.dataset.autorId;
+            refs.targetEl = target;
+            refs.autorCardsList = arrayForFinding.filter((el)=>el.postId === refs.idForFind);
+            toggleModal();
+            // createModalContent(target);
+            console.log(refs.autorCardsList);
+            return;
+        }
+    });
+}
+//todo Навішую слухача подій на кнопку на WINDOW для делегування події "CLICK" на кнопки карток
+onAllCardButtonsClick((0, _postsList.postsListData));
+function onAllCardButtonsClick(arrayForFinding) {
+    const refs = {
+        buttonActionType: null,
+        idForFind: null,
+        foundedCardDataObj: null,
+        targetEl: null
+    };
+    window.addEventListener("click", (buttonEvent)=>{
+        let { target  } = buttonEvent;
+        if (!target.classList.contains("button")) return;
+        else if (target !== undefined) {
+            refs.buttonActionType = Object.keys(target.dataset).join("");
+            refs.idForFind = Object.values(target.dataset).join("");
+            refs.targetEl = target;
+            refs.foundedCardDataObj = arrayForFinding.find((el)=>el.postId === refs.idForFind);
+            toFindBtnAction(refs);
+            return;
+        }
+    });
+}
+//* Функція яка шукає відповідну функцію до кнопки і запускає її
+function toFindBtnAction(refsObj) {
+    let { targetEl , buttonActionType , idForFind: cardId , foundedCardDataObj: cardDataObj , ...otherRefs } = refsObj;
+    let foundedBtnActionObj = null;
+    for (const el of btnActionsArr)if (el.actionName === buttonActionType) {
+        foundedBtnActionObj = el.actionFoo;
+        //* Запускаю найдену функцію кнопки
+        foundedBtnActionObj(cardId, cardDataObj, targetEl);
+        return;
+    }
+}
+//todo масив для перебору функцією .toFindBtnAction,  із функціями кнопок
+const btnActionsArr = [
+    {
+        actionName: "buyLater",
+        actionFoo: function userWantToBuyLater(cardId, cardDataObj, targetEl) {
+            targetEl.classList.toggle("--inCart");
+            if (targetEl.classList.contains("--inCart")) {
+                targetEl.classList.remove("--deleted");
+                alert(`Товар ar${cardId} додано до корзини.`);
+                return;
+            }
+            targetEl.classList.add("--deleted");
+            alert(`Товар ar${cardId} видалено із корзини.`);
+        }
+    },
+    {
+        actionName: "buyNow",
+        actionFoo: function userWantToBuyNow(cardId, cardDataObj, targetEl) {
+            toggleModal();
+            createModalContent();
+            console.log(`want to buy card ${cardId} Now`);
+        }
+    },
+    {
+        actionName: "showFotos",
+        actionFoo: function onOverlayFotosBtnClick(cardId, cardDataObj, targetEl) {
+            console.log(`show card ${cardId} FOTOS`);
+        }
+    },
+    {
+        actionName: "showSizes",
+        actionFoo: function onOverlaySizesBtnClick(cardId, cardDataObj, targetEl) {
+            console.log(`show card ${cardId} SIZES`);
+        }
+    },
+    {
+        actionName: "showDetails",
+        actionFoo: function onOverlayDetailsBtnClick(cardId, cardDataObj, targetEl) {
+            console.log(`show card ${cardId} DETAILS`);
+        }
+    },
+    {
+        actionName: "actionShare",
+        actionFoo: function onActionShareBtnClick(cardId, cardDataObj, targetEl) {
+            console.log(`want SHARE post ${cardId}`);
+        }
+    },
+    {
+        actionName: "actionLike",
+        actionFoo: function onActionLikeBtnClick(cardId, cardDataObj, targetEl) {
+            targetEl.classList.toggle("--liked");
+            if (targetEl.classList.contains("--liked")) {
+                targetEl.innerHTML = `<svg class="btn-svg">
+      <use href="${0, _spriteMarketSvgDefault.default}#icon-heart"></use>
+    </svg>`;
+                console.log(`post ${cardId} was LIKED`);
+            } else {
+                targetEl.innerHTML = `<svg class="btn-svg">
+      <use href="${0, _spriteMarketSvgDefault.default}#icon-heart-o"></use>
+    </svg>`;
+                console.log(`post ${cardId} was UNLIKED`);
+            }
+        }
+    },
+    {
+        actionName: "actionSave",
+        actionFoo: function onActionSaveBtnClick(cardId, cardDataObj, targetEl) {
+            targetEl.classList.toggle("--saved");
+            if (targetEl.classList.contains("--saved")) {
+                targetEl.innerHTML = `<svg class="btn-svg">
+      <use href="${0, _spriteMarketSvgDefault.default}#icon-bookmark"></use>
+    </svg>`;
+                console.log(`post ${cardId} was SAVED`);
+            } else {
+                targetEl.innerHTML = `<svg class="btn-svg">
+      <use href="${0, _spriteMarketSvgDefault.default}#icon-bookmark-o"></use>
+    </svg>`;
+                console.log(`post ${cardId} was UNSAVED`);
+            }
+        }
+    }, 
+];
 
-},{}]},["ShInH","8lqZg"], "8lqZg", "parcelRequired7c6")
+},{"../images/sprite_market.svg":"2hcif","../js-data/autorsList":"aMVTQ","../js-data/postsList":"1eGfh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2hcif":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("7gHCD") + "sprite_market.a76161c9.svg" + "?" + Date.now();
 
-//# sourceMappingURL=index.975ef6c8.js.map
+},{"./helpers/bundle-url":"lgJ39"}]},["1gjnD","aHHgN"], "aHHgN", "parcelRequired7c6")
+
+//# sourceMappingURL=index.f9b3b06b.js.map
